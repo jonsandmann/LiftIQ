@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String     @id @default(cuid())
+  clerkId    String     @unique
+  email      String     @unique
+  name       String?
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  
+  exercises  Exercise[]
+  workouts   Workout[]
+  sets       WorkoutSet[]
+}
+
+model Exercise {
+  id         String     @id @default(cuid())
+  name       String
+  category   Category
+  notes      String?
+  userId     String
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  
+  user       User       @relation(fields: [userId], references: [id])
+  sets       WorkoutSet[]
+  
+  @@index([userId])
+  @@index([category])
+}
+
+model Workout {
+  id         String     @id @default(cuid())
+  date       DateTime   @default(now())
+  notes      String?
+  userId     String
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  
+  user       User       @relation(fields: [userId], references: [id])
+  sets       WorkoutSet[]
+  
+  @@index([userId])
+  @@index([date])
+}
+
+model WorkoutSet {
+  id         String     @id @default(cuid())
+  workoutId  String?
+  exerciseId String
+  userId     String
+  reps       Int
+  weight     Float
+  notes      String?
+  date       DateTime   @default(now())
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  
+  workout    Workout?   @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+  exercise   Exercise   @relation(fields: [exerciseId], references: [id])
+  user       User       @relation(fields: [userId], references: [id])
+  
+  @@index([workoutId])
+  @@index([exerciseId])
+  @@index([userId])
+  @@index([date])
+}
+
+enum Category {
+  CHEST
+  BACK
+  LEGS
+  SHOULDERS
+  ARMS
+  CORE
+  CARDIO
+  OTHER
+}
