@@ -59,7 +59,7 @@ export default function DashboardLayout({
       </main>
       
       {/* Mobile Bottom Navigation */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-background border-t">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-950 border-t">
         <div className="grid grid-cols-4 h-16">
           <Link 
             href="/dashboard" 

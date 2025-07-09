@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
 import { useSettings } from '@/lib/settings-context'
+import { AddExerciseSheet } from '@/components/exercises/add-exercise-sheet'
 
 interface Exercise {
   id: string
@@ -28,6 +29,7 @@ export function AddSetSheet({ open, onOpenChange, onSetAdded, userId }: AddSetSh
   const [reps, setReps] = useState('')
   const [loading, setLoading] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
+  const [showAddExercise, setShowAddExercise] = useState(false)
 
   useEffect(() => {
     if (open) {
@@ -128,7 +130,7 @@ export function AddSetSheet({ open, onOpenChange, onSetAdded, userId }: AddSetSh
 
         {!selectedExercise ? (
           // Exercise Selection
-          <div className="max-h-[80vh] flex flex-col">
+          <div className="h-[80vh] flex flex-col">
             <div className="px-4 pb-4">
               <h2 className="text-lg font-semibold mb-3">Select Exercise</h2>
               <Input
@@ -140,6 +142,18 @@ export function AddSetSheet({ open, onOpenChange, onSetAdded, userId }: AddSetSh
             </div>
 
             <div className="flex-1 overflow-y-auto px-4 pb-4">
+              {/* Create New Exercise Button */}
+              <Button 
+                onClick={() => setShowAddExercise(true)}
+                variant="outline"
+                className="w-full mb-4"
+              >
+                <svg className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+                Create New Exercise
+              </Button>
+
               {/* Recent Exercises */}
               {recentExercises.length > 0 && !searchTerm && (
                 <>
@@ -266,7 +280,7 @@ export function AddSetSheet({ open, onOpenChange, onSetAdded, userId }: AddSetSh
         open && "fixed inset-0 z-50 bg-black/80"
       )}>
         {open && (
-          <div className="fixed left-[50%] top-[50%] z-50 w-full max-w-lg translate-x-[-50%] translate-y-[-50%] border bg-background p-6 shadow-lg sm:rounded-lg">
+          <div className="fixed left-[50%] top-[50%] z-50 w-full max-w-lg translate-x-[-50%] translate-y-[-50%] border bg-white dark:bg-gray-950 p-6 shadow-lg sm:rounded-lg">
             <button
               onClick={() => onOpenChange(false)}
               className="absolute right-4 top-4 rounded-sm opacity-70 hover:opacity-100"
@@ -284,6 +298,20 @@ export function AddSetSheet({ open, onOpenChange, onSetAdded, userId }: AddSetSh
           </div>
         )}
       </div>
+
+      {/* Add Exercise Sheet */}
+      <AddExerciseSheet
+        open={showAddExercise}
+        onOpenChange={setShowAddExercise}
+        onExerciseAdded={(exercise) => {
+          if (exercise) {
+            setSelectedExercise(exercise)
+            fetchExercises()
+            fetchRecentExercises()
+          }
+          setShowAddExercise(false)
+        }}
+      />
     </>
   )
 }

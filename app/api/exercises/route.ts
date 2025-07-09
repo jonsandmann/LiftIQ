@@ -1,6 +1,7 @@
 import { auth } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { Category } from '@prisma/client'
 
 export async function GET(request: Request) {
   const { userId } = await auth()
@@ -36,14 +37,14 @@ export async function GET(request: Request) {
     // If no exercises exist, create some default ones
     if (exercises.length === 0) {
       const defaultExercises = [
-        { name: 'Bench Press', category: 'CHEST' },
-        { name: 'Squat', category: 'LEGS' },
-        { name: 'Deadlift', category: 'BACK' },
-        { name: 'Overhead Press', category: 'SHOULDERS' },
-        { name: 'Barbell Row', category: 'BACK' },
-        { name: 'Pull-ups', category: 'BACK' },
-        { name: 'Dumbbell Curl', category: 'ARMS' },
-        { name: 'Tricep Extension', category: 'ARMS' },
+        { name: 'Bench Press', category: Category.CHEST },
+        { name: 'Squat', category: Category.LEGS },
+        { name: 'Deadlift', category: Category.BACK },
+        { name: 'Overhead Press', category: Category.SHOULDERS },
+        { name: 'Barbell Row', category: Category.BACK },
+        { name: 'Pull-ups', category: Category.BACK },
+        { name: 'Dumbbell Curl', category: Category.ARMS },
+        { name: 'Tricep Extension', category: Category.ARMS },
       ]
 
       const createdExercises = await Promise.all(

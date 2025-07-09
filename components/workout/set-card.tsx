@@ -28,7 +28,7 @@ export function SetCard({ set, onDelete }: SetCardProps) {
   })
 
   return (
-    <div className="glass-card rounded-lg p-3 flex items-center justify-between hover:bg-muted/50 transition-colors">
+    <div className="glass-card bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800 rounded-lg p-3 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
       <div className="flex items-center gap-4 flex-1">
         <div className="flex items-center gap-2">
           <span className="font-semibold">{displayWeight.toFixed(1)}</span>

@@ -5,8 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
-import { AddExerciseDialog } from './add-exercise-dialog'
-import { ExerciseCard } from './exercise-card'
+import { AddExerciseSheet } from './add-exercise-sheet'
 import { CategoryFilter } from './category-filter'
 
 interface Exercise {
@@ -123,35 +122,16 @@ export function ExerciseList({ userId }: { userId: string }) {
           selectedCategory={selectedCategory}
           onCategoryChange={setSelectedCategory}
         />
-        <Button onClick={() => setShowAddExercise(true)}>
-          Add Exercise
+        <Button 
+          onClick={() => setShowAddExercise(true)}
+          variant="outline"
+          size="sm"
+        >
+          <svg className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          </svg>
+          Add
         </Button>
-      </div>
-
-      {/* Stats Summary */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <Card className="p-4 text-center">
-          <p className="text-2xl font-bold">{exercises.length}</p>
-          <p className="text-sm text-muted-foreground">Total Exercises</p>
-        </Card>
-        <Card className="p-4 text-center">
-          <p className="text-2xl font-bold">
-            {exercises.filter(ex => ex.category === 'CHEST').length}
-          </p>
-          <p className="text-sm text-muted-foreground">Chest</p>
-        </Card>
-        <Card className="p-4 text-center">
-          <p className="text-2xl font-bold">
-            {exercises.filter(ex => ex.category === 'BACK').length}
-          </p>
-          <p className="text-sm text-muted-foreground">Back</p>
-        </Card>
-        <Card className="p-4 text-center">
-          <p className="text-2xl font-bold">
-            {exercises.filter(ex => ex.category === 'LEGS').length}
-          </p>
-          <p className="text-sm text-muted-foreground">Legs</p>
-        </Card>
       </div>
 
       {/* Exercise List */}
@@ -169,20 +149,51 @@ export function ExerciseList({ userId }: { userId: string }) {
           )}
         </div>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="space-y-1">
           {filteredExercises.map((exercise) => (
-            <ExerciseCard
+            <div
               key={exercise.id}
-              exercise={exercise}
-              onDelete={() => handleDeleteExercise(exercise.id)}
-              onUpdate={(updates) => handleUpdateExercise(exercise.id, updates)}
-            />
+              className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+            >
+              <div className="flex-1">
+                <h3 className="font-medium">{exercise.name}</h3>
+                {exercise.notes && (
+                  <p className="text-sm text-muted-foreground">{exercise.notes}</p>
+                )}
+              </div>
+              <div className="flex gap-1">
+                <Button 
+                  size="sm" 
+                  variant="ghost"
+                  onClick={() => {
+                    const newName = prompt('Edit exercise name:', exercise.name)
+                    if (newName && newName !== exercise.name) {
+                      handleUpdateExercise(exercise.id, { name: newName })
+                    }
+                  }}
+                >
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                </Button>
+                <Button 
+                  size="sm" 
+                  variant="ghost"
+                  className="text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                  onClick={() => handleDeleteExercise(exercise.id)}
+                >
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </Button>
+              </div>
+            </div>
           ))}
         </div>
       )}
 
-      {/* Add Exercise Dialog */}
-      <AddExerciseDialog
+      {/* Add Exercise Sheet */}
+      <AddExerciseSheet
         open={showAddExercise}
         onOpenChange={setShowAddExercise}
         onExerciseAdded={handleExerciseAdded}

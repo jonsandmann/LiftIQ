@@ -7,6 +7,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { AddSetSheet } from './add-set-sheet'
 import { SetCard } from './set-card'
 import { EmptyState } from './empty-state'
+import { useSettings } from '@/lib/settings-context'
 
 interface WorkoutSet {
   id: string
@@ -26,6 +27,7 @@ interface GroupedSets {
 }
 
 export function WorkoutView({ userId }: { userId: string }) {
+  const { weightUnit, convertWeight } = useSettings()
   const [sets, setSets] = useState<WorkoutSet[]>([])
   const [loading, setLoading] = useState(true)
   const [showAddSet, setShowAddSet] = useState(false)
@@ -61,6 +63,7 @@ export function WorkoutView({ userId }: { userId: string }) {
   }
 
   const totalVolume = sets.reduce((sum, set) => sum + (set.weight * set.reps), 0)
+  const displayVolume = weightUnit === 'kg' ? convertWeight(totalVolume, 'kg') : totalVolume
   const totalSets = sets.length
   const uniqueExercises = new Set(sets.map(s => s.exerciseId)).size
 
@@ -102,15 +105,15 @@ export function WorkoutView({ userId }: { userId: string }) {
   return (
     <div className="space-y-6">
       {/* Today's Summary */}
-      <Card className="glass-card">
+      <Card className="glass-card bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800">
         <CardHeader>
           <CardTitle className="text-lg font-medium">Today&apos;s Workout</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-3 gap-4 text-center">
             <div>
-              <p className="text-2xl font-bold">{totalVolume.toLocaleString()}</p>
-              <p className="text-sm text-muted-foreground">lbs volume</p>
+              <p className="text-2xl font-bold">{Math.round(displayVolume).toLocaleString()}</p>
+              <p className="text-sm text-muted-foreground">{weightUnit} volume</p>
             </div>
             <div>
               <p className="text-2xl font-bold">{totalSets}</p>
