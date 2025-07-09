@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import { ClerkProvider } from '@clerk/nextjs'
 import { ThemeProvider } from '@/components/theme-provider'
 import { SettingsProvider } from '@/lib/settings-context'
+import { NavigationLayout } from '@/components/navigation-layout'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -27,7 +28,9 @@ export default function RootLayout({
             enableSystem
           >
             <SettingsProvider>
-              {children}
+              <NavigationLayout>
+                {children}
+              </NavigationLayout>
             </SettingsProvider>
           </ThemeProvider>
         </body>

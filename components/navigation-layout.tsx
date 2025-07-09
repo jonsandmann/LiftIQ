@@ -1,22 +1,25 @@
 'use client'
 
+import { useAuth } from '@clerk/nextjs'
 import { UserButton } from '@clerk/nextjs'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export function NavigationLayout({ children }: { children: React.ReactNode }) {
+  const { isSignedIn } = useAuth()
   const pathname = usePathname()
+  
+  // Don't show navigation on auth pages
+  if (!isSignedIn || pathname.startsWith('/sign-')) {
+    return <>{children}</>
+  }
   
   return (
     <div className="min-h-screen flex flex-col">
       {/* Desktop Navigation */}
-      <header className="hidden md:block border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="hidden md:block border-b bg-white dark:bg-gray-950">
         <div className="container flex h-16 items-center justify-between">
           <nav className="flex items-center gap-6">
             <Link href="/dashboard" className="font-bold text-xl">
@@ -26,16 +29,16 @@ export default function DashboardLayout({
               <Link href="/dashboard">
                 <Button variant="ghost" size="sm">Dashboard</Button>
               </Link>
-              <Link href="/dashboard/workout">
+              <Link href="/workout">
                 <Button variant="ghost" size="sm">Today's Workout</Button>
               </Link>
-              <Link href="/dashboard/exercises">
+              <Link href="/exercises">
                 <Button variant="ghost" size="sm">Exercises</Button>
               </Link>
-              <Link href="/dashboard/history">
+              <Link href="/history">
                 <Button variant="ghost" size="sm">History</Button>
               </Link>
-              <Link href="/dashboard/settings">
+              <Link href="/settings">
                 <Button variant="ghost" size="sm">Settings</Button>
               </Link>
             </div>
@@ -45,7 +48,7 @@ export default function DashboardLayout({
       </header>
       
       {/* Mobile Header */}
-      <header className="md:hidden border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="md:hidden border-b bg-white dark:bg-gray-950">
         <div className="container flex h-14 items-center justify-between">
           <Link href="/dashboard" className="font-bold text-xl">
             Liftiq
@@ -74,10 +77,10 @@ export default function DashboardLayout({
             <span>Home</span>
           </Link>
           <Link 
-            href="/dashboard/workout" 
+            href="/workout" 
             className={cn(
               "flex flex-col items-center justify-center gap-1 text-xs transition-colors",
-              pathname === '/dashboard/workout' ? 'text-primary' : 'text-muted-foreground'
+              pathname === '/workout' ? 'text-primary' : 'text-muted-foreground'
             )}
           >
             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -86,10 +89,10 @@ export default function DashboardLayout({
             <span>Workout</span>
           </Link>
           <Link 
-            href="/dashboard/exercises" 
+            href="/exercises" 
             className={cn(
               "flex flex-col items-center justify-center gap-1 text-xs transition-colors",
-              pathname === '/dashboard/exercises' ? 'text-primary' : 'text-muted-foreground'
+              pathname === '/exercises' ? 'text-primary' : 'text-muted-foreground'
             )}
           >
             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -98,10 +101,10 @@ export default function DashboardLayout({
             <span>Exercises</span>
           </Link>
           <Link 
-            href="/dashboard/settings" 
+            href="/settings" 
             className={cn(
               "flex flex-col items-center justify-center gap-1 text-xs transition-colors",
-              pathname === '/dashboard/settings' ? 'text-primary' : 'text-muted-foreground'
+              pathname === '/settings' ? 'text-primary' : 'text-muted-foreground'
             )}
           >
             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
