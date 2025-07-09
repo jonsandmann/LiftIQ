@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { AddSetDialog } from './add-set-dialog'
+import { AddSetSheet } from './add-set-sheet'
 import { SetCard } from './set-card'
 import { EmptyState } from './empty-state'
 
@@ -83,6 +83,22 @@ export function WorkoutView({ userId }: { userId: string }) {
     )
   }
 
+  if (sets.length === 0 && !loading) {
+    return (
+      <div className="space-y-6">
+        <EmptyState onAddSet={() => setShowAddSet(true)} />
+        
+        {/* Add Set Sheet */}
+        <AddSetSheet
+          open={showAddSet}
+          onOpenChange={setShowAddSet}
+          onSetAdded={handleSetAdded}
+          userId={userId}
+        />
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-6">
       {/* Today's Summary */}
@@ -117,10 +133,7 @@ export function WorkoutView({ userId }: { userId: string }) {
       </Button>
 
       {/* Sets List */}
-      {sets.length === 0 ? (
-        <EmptyState onAddSet={() => setShowAddSet(true)} />
-      ) : (
-        <div className="space-y-4">
+      <div className="space-y-4">
           {Object.entries(groupedSets).map(([exerciseName, exerciseSets]) => (
             <div key={exerciseName} className="space-y-2">
               <h3 className="text-sm font-medium text-muted-foreground px-1">
@@ -138,10 +151,9 @@ export function WorkoutView({ userId }: { userId: string }) {
             </div>
           ))}
         </div>
-      )}
 
-      {/* Add Set Dialog */}
-      <AddSetDialog
+      {/* Add Set Sheet */}
+      <AddSetSheet
         open={showAddSet}
         onOpenChange={setShowAddSet}
         onSetAdded={handleSetAdded}

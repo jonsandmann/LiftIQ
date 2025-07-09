@@ -1,6 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { useSettings } from '@/lib/settings-context'
 
 interface SetCardProps {
   set: {
@@ -17,7 +18,10 @@ interface SetCardProps {
 }
 
 export function SetCard({ set, onDelete }: SetCardProps) {
+  const { weightUnit, convertWeight } = useSettings()
+  const displayWeight = weightUnit === 'kg' ? convertWeight(set.weight, 'kg') : set.weight
   const volume = set.weight * set.reps
+  const displayVolume = weightUnit === 'kg' ? convertWeight(volume, 'kg') : volume
   const time = new Date(set.createdAt).toLocaleTimeString('en-US', { 
     hour: 'numeric', 
     minute: '2-digit' 
@@ -27,14 +31,14 @@ export function SetCard({ set, onDelete }: SetCardProps) {
     <div className="glass-card rounded-lg p-3 flex items-center justify-between hover:bg-muted/50 transition-colors">
       <div className="flex items-center gap-4 flex-1">
         <div className="flex items-center gap-2">
-          <span className="font-semibold">{set.weight}</span>
-          <span className="text-sm text-muted-foreground">lbs</span>
+          <span className="font-semibold">{displayWeight.toFixed(1)}</span>
+          <span className="text-sm text-muted-foreground">{weightUnit}</span>
           <span className="text-muted-foreground mx-1">×</span>
           <span className="font-semibold">{set.reps}</span>
           <span className="text-sm text-muted-foreground">reps</span>
         </div>
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <span>{volume} lbs</span>
+          <span>{displayVolume.toFixed(0)} {weightUnit}</span>
           <span>•</span>
           <span>{time}</span>
         </div>
