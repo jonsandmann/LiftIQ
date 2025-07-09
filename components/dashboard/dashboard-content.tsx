@@ -27,6 +27,11 @@ export function DashboardContent() {
   const fetchDashboardStats = async () => {
     try {
       const response = await fetch('/api/dashboard/stats')
+      if (!response.ok) {
+        const errorData = await response.json()
+        console.error('Dashboard stats error:', errorData)
+        throw new Error(errorData.error || 'Failed to fetch stats')
+      }
       const data = await response.json()
       setStats(data)
     } catch (error) {
