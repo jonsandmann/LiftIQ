@@ -2,7 +2,7 @@ import { auth } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
-export async function GET() {
+export async function GET(request: Request) {
   const { userId } = await auth()
   
   if (!userId) {
@@ -18,9 +18,19 @@ export async function GET() {
       return new NextResponse('User not found', { status: 404 })
     }
 
+    const { searchParams } = new URL(request.url)
+    const includeStats = searchParams.get('includeStats') === 'true'
+
     const exercises = await prisma.exercise.findMany({
       where: { userId: user.id },
-      orderBy: { name: 'asc' }
+      orderBy: { name: 'asc' },
+      ...(includeStats && {
+        include: {
+          _count: {
+            select: { sets: true }
+          }
+        }
+      })
     })
 
     // If no exercises exist, create some default ones
