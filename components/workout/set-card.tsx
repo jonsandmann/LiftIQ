@@ -24,24 +24,26 @@ export function SetCard({ set, onDelete }: SetCardProps) {
   })
 
   return (
-    <div className="glass-card rounded-lg p-4 flex items-center justify-between">
-      <div className="flex-1">
-        <div className="flex items-baseline gap-3">
-          <span className="text-lg font-semibold">{set.weight} lbs</span>
-          <span className="text-muted-foreground">×</span>
-          <span className="text-lg font-semibold">{set.reps} reps</span>
+    <div className="glass-card rounded-lg p-3 flex items-center justify-between hover:bg-muted/50 transition-colors">
+      <div className="flex items-center gap-4 flex-1">
+        <div className="flex items-center gap-2">
+          <span className="font-semibold">{set.weight}</span>
+          <span className="text-sm text-muted-foreground">lbs</span>
+          <span className="text-muted-foreground mx-1">×</span>
+          <span className="font-semibold">{set.reps}</span>
+          <span className="text-sm text-muted-foreground">reps</span>
         </div>
-        <div className="flex items-center gap-2 mt-1">
-          <span className="text-sm text-muted-foreground">{volume} lbs</span>
-          <span className="text-muted-foreground">•</span>
-          <span className="text-sm text-muted-foreground">{time}</span>
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <span>{volume} lbs</span>
+          <span>•</span>
+          <span>{time}</span>
         </div>
       </div>
       <Button
         variant="ghost"
-        size="icon"
+        size="sm"
         onClick={onDelete}
-        className="text-muted-foreground hover:text-destructive"
+        className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive"
       >
         <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

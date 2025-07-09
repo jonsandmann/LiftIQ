@@ -64,9 +64,11 @@ const config: Config = {
         "fade-out": "fade-out 0.5s ease-out",
         "slide-in": "slide-in 0.5s ease-out",
         shimmer: "shimmer 2s infinite",
+        "in": "in 0.2s ease-out",
+        "out": "out 0.2s ease-out",
       },
     },
   },
-  plugins: [],
+  plugins: [require("tailwindcss-animate")],
 };
 export default config;

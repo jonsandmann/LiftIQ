@@ -120,13 +120,13 @@ export function WorkoutView({ userId }: { userId: string }) {
       {sets.length === 0 ? (
         <EmptyState onAddSet={() => setShowAddSet(true)} />
       ) : (
-        <div className="space-y-6">
+        <div className="space-y-4">
           {Object.entries(groupedSets).map(([exerciseName, exerciseSets]) => (
-            <div key={exerciseName} className="space-y-3">
-              <h3 className="text-sm font-medium text-muted-foreground">
+            <div key={exerciseName} className="space-y-2">
+              <h3 className="text-sm font-medium text-muted-foreground px-1">
                 {exerciseName} ({exerciseSets.length} sets)
               </h3>
-              <div className="space-y-2">
+              <div className="space-y-1">
                 {exerciseSets.map((set) => (
                   <SetCard
                     key={set.id}
