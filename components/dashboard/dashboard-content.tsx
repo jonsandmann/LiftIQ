@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
-import { VolumeChart } from './volume-chart'
+import { VolumeTrendChart } from './volume-trend-chart'
 import { StatsCards } from './stats-cards'
 
 interface DashboardStats {
@@ -16,7 +16,7 @@ interface DashboardStats {
   volumeTrend: Array<{ date: string; volume: number }>
 }
 
-export function DashboardContent() {
+export function DashboardContent({ userId }: { userId: string }) {
   const [stats, setStats] = useState<DashboardStats | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -69,33 +69,17 @@ export function DashboardContent() {
     <div className="space-y-6">
       <StatsCards stats={stats} />
       
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Volume Trend</CardTitle>
-            <CardDescription>Your workout volume over the last 30 days</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {stats.volumeTrend.length > 0 ? (
-              <VolumeChart data={stats.volumeTrend} />
-            ) : (
-              <div className="h-64 flex items-center justify-center text-muted-foreground">
-                Start tracking workouts to see your progress
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
-            <CardDescription>Your latest workout sessions</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <RecentActivity />
-          </CardContent>
-        </Card>
-      </div>
+      <VolumeTrendChart userId={userId} />
+      
+      <Card>
+        <CardHeader>
+          <CardTitle>Recent Activity</CardTitle>
+          <CardDescription>Your latest workout sessions</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <RecentActivity />
+        </CardContent>
+      </Card>
     </div>
   )
 }

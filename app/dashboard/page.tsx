@@ -16,7 +16,7 @@ export default async function DashboardPage() {
         <p className="text-muted-foreground">Track your progress and view your stats</p>
       </div>
       
-      <DashboardContent />
+      <DashboardContent userId={userId} />
     </div>
   )
 }

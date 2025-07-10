@@ -22,9 +22,24 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url)
     const includeStats = searchParams.get('includeStats') === 'true'
 
+    // Get system user for default exercises
+    const systemUser = await prisma.user.findUnique({
+      where: { email: 'system@liftiq.app' }
+    })
+
+    // Get both user exercises and system exercises
     const exercises = await prisma.exercise.findMany({
-      where: { userId: user.id },
-      orderBy: { name: 'asc' },
+      where: {
+        OR: [
+          { userId: user.id },
+          ...(systemUser ? [{ userId: systemUser.id }] : [])
+        ]
+      },
+      orderBy: [
+        { userId: 'desc' }, // User exercises first
+        { category: 'asc' },
+        { name: 'asc' }
+      ],
       ...(includeStats && {
         include: {
           _count: {
@@ -34,34 +49,13 @@ export async function GET(request: Request) {
       })
     })
 
-    // If no exercises exist, create some default ones
-    if (exercises.length === 0) {
-      const defaultExercises = [
-        { name: 'Bench Press', category: Category.CHEST },
-        { name: 'Squat', category: Category.LEGS },
-        { name: 'Deadlift', category: Category.BACK },
-        { name: 'Overhead Press', category: Category.SHOULDERS },
-        { name: 'Barbell Row', category: Category.BACK },
-        { name: 'Pull-ups', category: Category.BACK },
-        { name: 'Dumbbell Curl', category: Category.ARMS },
-        { name: 'Tricep Extension', category: Category.ARMS },
-      ]
+    // Add a field to indicate if it's a user exercise
+    const exercisesWithSource = exercises.map(exercise => ({
+      ...exercise,
+      isUserExercise: exercise.userId === user.id
+    }))
 
-      const createdExercises = await Promise.all(
-        defaultExercises.map(ex => 
-          prisma.exercise.create({
-            data: {
-              ...ex,
-              userId: user.id
-            }
-          })
-        )
-      )
-
-      return NextResponse.json(createdExercises)
-    }
-
-    return NextResponse.json(exercises)
+    return NextResponse.json(exercisesWithSource)
   } catch (error) {
     console.error('Failed to fetch exercises:', error)
     return new NextResponse('Internal Server Error', { status: 500 })
